@@ -1,4 +1,4 @@
-# [Project Name]
+# Rewards
 
 A consumer app for paying credit-card bills, earning reward coins on payments, and reviewing your own spending. Built as a take-home assignment for Digital Alpha Technologies.
 
@@ -16,7 +16,7 @@ Specifically:
 
 - **Frontend:** Next.js, React, TypeScript. A small internal design system lives in `@/lib/tokens` — color, spacing, and type scales that every component pulls from rather than hardcoding values. The `Table` component is fully hand-built per the assignment's constraint: sticky header, hover/focus states, loading skeletons, empty/error states, and sortable column headers with `aria-sort`. The transaction detail `Modal` is also hand-built, with a focus trap and Escape-to-close.
 - **Backend:** Python, FastAPI. Routes, business logic, and data access are kept in separate layers (`app/routes`, `app/service`, `app/model`) rather than one file doing everything.
-- **Database:** PostgreSQL. Schema and seed script live in [`schema.sql` / migrations folder — fill in].
+- **Database:** PostgreSQL. Schema and seed script live in [`seed/seed.py`].
 
 ## Local setup
 
