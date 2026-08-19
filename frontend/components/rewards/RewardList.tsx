@@ -1,6 +1,8 @@
 "use client";
 
+import { Gift } from "lucide-react";
 import RewardCard from "@/components/rewards/RewardCard";
+import { colors, radius, typography } from "@/lib/tokens";
 
 type Reward = {
   id: number;
@@ -22,26 +24,60 @@ export default function RewardsList({
 }: RewardsListProps) {
   if (rewards.length === 0) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
-        <p className="text-sm text-gray-500">
+      <div
+        className="flex flex-col items-center gap-3 p-10 text-center"
+        style={{
+          borderRadius: radius.lg,
+          backgroundColor: colors.surface,
+          border: `1px solid ${colors.border}`,
+        }}
+      >
+        <div
+          className="flex h-11 w-11 items-center justify-center rounded-full"
+          style={{ backgroundColor: colors.accentMuted }}
+        >
+          <Gift size={18} strokeWidth={2} color={colors.accent} />
+        </div>
+
+        <p
+          style={{
+            color: colors.textPrimary,
+            fontFamily: typography.fontBody,
+            fontSize: typography.size.sm,
+            fontWeight: typography.weight.semibold,
+          }}
+        >
           No rewards available.
+        </p>
+
+        <p
+          style={{
+            color: colors.textMuted,
+            fontFamily: typography.fontBody,
+            fontSize: typography.size.xs,
+          }}
+        >
+          Check back soon — new rewards are added regularly.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      {rewards.map((reward) => (
-        <RewardCard
-          key={reward.id}
-          name={reward.name}
-          description={reward.description}
-          coinCost={reward.coin_cost}
-          onRedeem={() => onRedeem(reward)}
-          disabled={balance < reward.coin_cost}
-        />
-      ))}
+    <div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {rewards.map((reward) => (
+          <RewardCard
+            key={reward.id}
+            name={reward.name}
+            description={reward.description}
+            coinCost={reward.coin_cost}
+            balance={balance}
+            onRedeem={() => onRedeem(reward)}
+            disabled={balance < reward.coin_cost}
+          />
+        ))}
+      </div>
     </div>
   );
 }

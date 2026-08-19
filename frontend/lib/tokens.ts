@@ -8,24 +8,38 @@ export const colors = {
   textSecondary: "#5B6270",
   textMuted: "#9299A6",
 
-  // Brand / accent (teal-green)
-  primary: "#0E6E55",
-  primaryHover: "#0A5643",
-  primaryMuted: "#E6F2EE",
+  // Brand
+  primary: "#B4232F",
+  primaryHover: "#941D28",
+  primaryMuted: "#F9E7E9",
 
-  // Rewards / coins accent (gold)
+  // Sidebar / navigation — light, warm-ivory with a crimson undertone
+  sidebar: "#FFFBFA",
+  sidebarHover: "#FBEEF0",
+  sidebarActive: "#FBEEF0",
+
+  sidebarGradientStart: "#C52D3A",
+  sidebarGradientEnd: "#8F1D29",
+
+  sidebarText: "#2B1116",
+  sidebarTextMuted: "#8C6B70",
+  sidebarBorder: "#F1E1E4",
+
+  // Rewards / coins accent
   accent: "#C88719",
   accentMuted: "#FBF1DF",
 
   // Status
   success: "#1E8E5A",
   successMuted: "#E9F7EF",
+
   warning: "#8A6D00",
   warningMuted: "#FCF4D9",
+
   danger: "#C1352B",
   dangerMuted: "#FBEAE8",
 
-  // Inverse (sidebar, dark surfaces used sparingly)
+  // Inverse
   inkSurface: "#12151B",
   inkSurfaceHover: "rgba(255,255,255,0.07)",
   inkBorder: "rgba(255,255,255,0.08)",
@@ -51,6 +65,7 @@ export const typography = {
   fontDisplay: "'Sora', system-ui, sans-serif",
   fontBody: "'Inter', system-ui, sans-serif",
   fontMono: "'IBM Plex Mono', ui-monospace, monospace",
+
   size: {
     xs: "11px",
     sm: "12.5px",
@@ -59,6 +74,7 @@ export const typography = {
     lg: "20px",
     xl: "28px",
   },
+
   weight: {
     regular: 400,
     medium: 500,

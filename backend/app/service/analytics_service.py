@@ -2,6 +2,7 @@ from sqlalchemy import func, distinct, extract
 from sqlalchemy.orm import Session
 
 from app.model.transaction import Transaction
+from app.model.user import User
 
 
 def get_spending_by_category(db: Session):
@@ -60,3 +61,7 @@ def get_monthly_spending(db: Session):
         }
         for year, month, amount in results
     ]
+
+def get_coin_balance(db: Session) -> int:
+    user = db.query(User).first()
+    return user.coin_balance if user else 0

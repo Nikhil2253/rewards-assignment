@@ -1,41 +1,99 @@
-import type { InputHTMLAttributes } from "react";
+"use client";
+
+import { useState, type InputHTMLAttributes, type ReactNode } from "react";
+import { colors, radius, shadow, typography } from "@/lib/tokens";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
   error?: string;
+  icon?: ReactNode;
 };
 
 export default function Input({
   label,
   error,
+  icon,
   className = "",
   id,
+  style,
+  disabled,
+  onFocus,
+  onBlur,
   ...props
 }: InputProps) {
+  const [focused, setFocused] = useState(false);
+
+  const borderColor = error
+    ? colors.danger
+    : focused
+      ? colors.primary
+      : colors.border;
+
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
         <label
           htmlFor={id}
-          className="text-sm font-medium text-gray-700"
+          style={{
+            color: colors.textSecondary,
+            fontFamily: typography.fontBody,
+            fontSize: typography.size.sm,
+            fontWeight: typography.weight.medium,
+          }}
         >
           {label}
         </label>
       )}
 
-      <input
-        id={id}
-        className={`h-10 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-900 outline-none transition
-          placeholder:text-gray-400
-          focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
-          disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500
-          ${error ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : ""}
-          ${className}`}
-        {...props}
-      />
+      <div className="relative flex items-center">
+        {icon && (
+          <span
+            className="pointer-events-none absolute left-3 flex items-center"
+            style={{ color: focused ? colors.primary : colors.textMuted }}
+          >
+            {icon}
+          </span>
+        )}
+
+        <input
+          id={id}
+          disabled={disabled}
+          className={`h-10 w-full outline-none transition-colors duration-150 ${className}`}
+          style={{
+            borderRadius: radius.md,
+            border: `1px solid ${borderColor}`,
+            backgroundColor: disabled ? colors.surfaceHover : colors.surface,
+            color: disabled ? colors.textMuted : colors.textPrimary,
+            fontFamily: typography.fontBody,
+            fontSize: typography.size.base,
+            paddingLeft: icon ? "36px" : "12px",
+            paddingRight: "12px",
+            boxShadow: focused
+              ? `0 0 0 1px ${error ? colors.dangerMuted : colors.primaryMuted}`
+              : shadow.sm,
+            cursor: disabled ? "not-allowed" : "text",
+            ...style,
+          }}
+          onFocus={(event) => {
+            setFocused(true);
+            onFocus?.(event);
+          }}
+          onBlur={(event) => {
+            setFocused(false);
+            onBlur?.(event);
+          }}
+          {...props}
+        />
+      </div>
 
       {error && (
-        <p className="text-xs text-red-600">
+        <p
+          style={{
+            color: colors.danger,
+            fontFamily: typography.fontBody,
+            fontSize: typography.size.xs,
+          }}
+        >
           {error}
         </p>
       )}

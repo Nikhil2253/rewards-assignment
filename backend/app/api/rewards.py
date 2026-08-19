@@ -41,3 +41,8 @@ def redeem(payload: RedeemRequest, db: Session = Depends(get_db)):
         reward_name=reward_name,
         coins_spent=coins_spent,
     )
+
+@router.get("/balance")
+def get_balance(db: Session = Depends(get_db)):
+    balance = reward_service.get_coin_balance(db)
+    return {"balance": balance}

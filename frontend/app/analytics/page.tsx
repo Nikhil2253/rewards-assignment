@@ -1,7 +1,10 @@
 "use client";
 
+import MonthlySpendingTrend from "@/components/analytics/MonthlySpending";
 import SpendingByCategory from "@/components/analytics/SpendingByCategory";
 import { useEffect, useState } from "react";
+import { BarChart3, AlertTriangle } from "lucide-react";
+import { colors, radius, typography } from "@/lib/tokens";
 
 type CategorySpending = {
   category: string;
@@ -45,11 +48,8 @@ export default function AnalyticsPage() {
           throw new Error("Failed to fetch analytics");
         }
 
-        const categoryData =
-          await categoryResponse.json();
-
-        const monthlyData =
-          await monthlyResponse.json();
+        const categoryData = await categoryResponse.json();
+        const monthlyData = await monthlyResponse.json();
 
         setCategorySpending(categoryData);
         setMonthlySpending(monthlyData);
@@ -68,85 +68,122 @@ export default function AnalyticsPage() {
   }, []);
 
   return (
-    <main className="flex-1 p-6">
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold">
-          Spending Analytics
-        </h2>
+    <main className="flex-1 overflow-y-auto p-6">
+      {/* Page header — matches the icon-badge pattern used across the app */}
+      <div className="mb-6 flex items-center gap-3">
+        <div
+          className="flex h-11 w-11 shrink-0 items-center justify-center"
+          style={{
+            borderRadius: radius.md,
+            backgroundColor: colors.primaryMuted,
+          }}
+        >
+          <BarChart3 size={20} strokeWidth={2.25} color={colors.primary} />
+        </div>
 
-        <p className="mt-2 text-gray-500">
-          Understand your spending patterns over time.
-        </p>
+        <div>
+          <h2
+            style={{
+              color: colors.textPrimary,
+              fontFamily: typography.fontDisplay,
+              fontSize: typography.size.lg,
+              fontWeight: typography.weight.bold,
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Spending Analytics
+          </h2>
+
+          <p
+            style={{
+              color: colors.textMuted,
+              fontFamily: typography.fontBody,
+              fontSize: typography.size.sm,
+              marginTop: "2px",
+            }}
+          >
+            Understand your spending patterns over time.
+          </p>
+        </div>
       </div>
 
       {loading && (
-        <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
-          <p className="text-sm text-gray-500">
-            Loading analytics...
-          </p>
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
+          <div
+            className="animate-pulse xl:col-span-3"
+            style={{
+              height: "420px",
+              borderRadius: radius.lg,
+              backgroundColor: colors.surfaceHover,
+              border: `1px solid ${colors.border}`,
+            }}
+          />
+          <div
+            className="animate-pulse xl:col-span-2"
+            style={{
+              height: "420px",
+              borderRadius: radius.lg,
+              backgroundColor: colors.surfaceHover,
+              border: `1px solid ${colors.border}`,
+            }}
+          />
         </div>
       )}
 
-      {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4">
-          <p className="text-sm text-red-600">
-            {error}
-          </p>
+      {!loading && error && (
+        <div
+          className="flex items-start gap-3 p-4"
+          style={{
+            borderRadius: radius.lg,
+            backgroundColor: "rgba(180,35,47,0.06)",
+            border: "1px solid rgba(180,35,47,0.20)",
+          }}
+        >
+          <AlertTriangle
+            size={18}
+            strokeWidth={2.25}
+            color={colors.sidebarGradientStart}
+            className="mt-0.5 shrink-0"
+          />
+
+          <div>
+            <p
+              style={{
+                color: colors.textPrimary,
+                fontFamily: typography.fontBody,
+                fontSize: typography.size.sm,
+                fontWeight: typography.weight.semibold,
+              }}
+            >
+              Couldn&apos;t load analytics
+            </p>
+
+            <p
+              style={{
+                color: colors.textMuted,
+                fontFamily: typography.fontBody,
+                fontSize: typography.size.xs,
+                marginTop: "2px",
+              }}
+            >
+              {error}
+            </p>
+          </div>
         </div>
       )}
 
       {!loading && !error && (
-        <div className="space-y-6">
-          {/* Category breakdown */}
-          <section className="rounded-xl border border-gray-200 bg-white p-5">
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold">
-                Spending by Category
-              </h3>
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
+          <div className="xl:col-span-3">
+            <MonthlySpendingTrend data={monthlySpending} />
+          </div>
 
-              <p className="mt-1 text-sm text-gray-500">
-                See where your money is being spent.
-              </p>
-            </div>
-
+          <div className="xl:col-span-2">
             <SpendingByCategory
               data={categorySpending}
               onCategoryClick={() => {}}
             />
-          </section>
-
-          {/* Monthly trend */}
-          <section className="rounded-xl border border-gray-200 bg-white p-5">
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold">
-                Monthly Spending Trend
-              </h3>
-
-              <p className="mt-1 text-sm text-gray-500">
-                Track how your spending changes month by month.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {monthlySpending.map((item) => (
-                <div
-                  key={item.month}
-                  className="flex items-center justify-between border-b border-gray-100 pb-3 last:border-b-0"
-                >
-                  <span className="text-sm text-gray-600">
-                    {item.month}
-                  </span>
-
-                  <span className="font-medium text-gray-900">
-                    ₹{item.amount.toLocaleString("en-IN", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </section>
+          </div>
         </div>
       )}
     </main>

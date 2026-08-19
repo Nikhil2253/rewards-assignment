@@ -1,3 +1,8 @@
+"use client";
+
+import type { CSSProperties } from "react";
+import { colors, radius, typography } from "@/lib/tokens";
+
 type TransactionPaginationProps = {
   page: number;
   totalPages: number;
@@ -30,26 +35,64 @@ export default function TransactionPagination({
       ];
     }
 
-    return [
-      1,
-      "...",
-      page - 1,
-      page,
-      page + 1,
-      "...",
-      totalPages,
-    ];
+    return [1, "...", page - 1, page, page + 1, "...", totalPages];
   };
 
   const pages = getPages();
 
+  const navButtonStyle: CSSProperties = {
+    borderRadius: radius.md,
+    border: `1px solid ${colors.border}`,
+    backgroundColor: colors.surface,
+    color: colors.textSecondary,
+    fontFamily: typography.fontBody,
+    fontSize: typography.size.sm,
+    fontWeight: typography.weight.medium,
+    padding: "8px 14px",
+    transition: "background-color 150ms ease",
+  };
+
+  const pageButtonStyle = (active: boolean): CSSProperties =>
+    active
+      ? {
+          borderRadius: radius.md,
+          border: "1px solid transparent",
+          background: `linear-gradient(135deg, ${colors.sidebarGradientStart}, ${colors.sidebarGradientEnd})`,
+          color: colors.surface,
+          fontFamily: typography.fontBody,
+          fontSize: typography.size.sm,
+          fontWeight: typography.weight.semibold,
+          padding: "8px 13px",
+          boxShadow: "0 4px 12px rgba(180,35,47,0.22)",
+        }
+      : {
+          borderRadius: radius.md,
+          border: `1px solid ${colors.border}`,
+          backgroundColor: colors.surface,
+          color: colors.textSecondary,
+          fontFamily: typography.fontBody,
+          fontSize: typography.size.sm,
+          fontWeight: typography.weight.medium,
+          padding: "8px 13px",
+          transition: "background-color 150ms ease",
+        };
+
   return (
-    <div className="mt-4 flex items-center justify-center gap-1">
+    <div className="mt-4 flex items-center justify-center gap-1.5">
       <button
         type="button"
         disabled={page === 1}
         onClick={() => onPageChange(page - 1)}
-        className="rounded-lg border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+        className="disabled:cursor-not-allowed disabled:opacity-50"
+        style={navButtonStyle}
+        onMouseEnter={(event) => {
+          if (page !== 1) {
+            event.currentTarget.style.backgroundColor = colors.surfaceHover;
+          }
+        }}
+        onMouseLeave={(event) => {
+          event.currentTarget.style.backgroundColor = colors.surface;
+        }}
       >
         Previous
       </button>
@@ -58,7 +101,12 @@ export default function TransactionPagination({
         pageNumber === "..." ? (
           <span
             key={`ellipsis-${index}`}
-            className="px-3 py-2 text-sm text-gray-500"
+            style={{
+              padding: "8px 6px",
+              fontFamily: typography.fontBody,
+              fontSize: typography.size.sm,
+              color: colors.textMuted,
+            }}
           >
             ...
           </span>
@@ -67,11 +115,17 @@ export default function TransactionPagination({
             key={pageNumber}
             type="button"
             onClick={() => onPageChange(pageNumber)}
-            className={`rounded-lg border px-3 py-2 text-sm ${
-              page === pageNumber
-                ? "bg-gray-900 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-50"
-            }`}
+            style={pageButtonStyle(page === pageNumber)}
+            onMouseEnter={(event) => {
+              if (page !== pageNumber) {
+                event.currentTarget.style.backgroundColor = colors.surfaceHover;
+              }
+            }}
+            onMouseLeave={(event) => {
+              if (page !== pageNumber) {
+                event.currentTarget.style.backgroundColor = colors.surface;
+              }
+            }}
           >
             {pageNumber}
           </button>
@@ -82,7 +136,16 @@ export default function TransactionPagination({
         type="button"
         disabled={page === totalPages}
         onClick={() => onPageChange(page + 1)}
-        className="rounded-lg border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+        className="disabled:cursor-not-allowed disabled:opacity-50"
+        style={navButtonStyle}
+        onMouseEnter={(event) => {
+          if (page !== totalPages) {
+            event.currentTarget.style.backgroundColor = colors.surfaceHover;
+          }
+        }}
+        onMouseLeave={(event) => {
+          event.currentTarget.style.backgroundColor = colors.surface;
+        }}
       >
         Next
       </button>

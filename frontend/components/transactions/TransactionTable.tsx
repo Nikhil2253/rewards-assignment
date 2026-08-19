@@ -37,38 +37,14 @@ export default function TransactionTable({
     {
       key: "timestamp",
       header: "Date",
-      render: (transaction) => (
-        <button
-          type="button"
-          onClick={() => onSortChange("timestamp")}
-          className="font-medium"
-        >
-          {new Date(transaction.timestamp).toLocaleDateString()}
-          {sortBy === "timestamp" && (
-            <span className="ml-1">
-              {sortOrder === "asc" ? "↑" : "↓"}
-            </span>
-          )}
-        </button>
-      ),
+      sortable: true,
+      render: (transaction) =>
+        new Date(transaction.timestamp).toLocaleDateString(),
     },
     {
       key: "merchant",
       header: "Merchant",
-      render: (transaction) => (
-        <button
-          type="button"
-          onClick={() => onSortChange("merchant")}
-          className="font-medium"
-        >
-          {transaction.merchant}
-          {sortBy === "merchant" && (
-            <span className="ml-1">
-              {sortOrder === "asc" ? "↑" : "↓"}
-            </span>
-          )}
-        </button>
-      ),
+      render: (transaction) => transaction.merchant,
     },
     {
       key: "category",
@@ -78,20 +54,9 @@ export default function TransactionTable({
     {
       key: "amount",
       header: "Amount",
-      render: (transaction) => (
-        <button
-          type="button"
-          onClick={() => onSortChange("amount")}
-          className="font-medium"
-        >
-          {transaction.currency} {transaction.amount.toFixed(2)}
-          {sortBy === "amount" && (
-            <span className="ml-1">
-              {sortOrder === "asc" ? "↑" : "↓"}
-            </span>
-          )}
-        </button>
-      ),
+      sortable: true,
+      render: (transaction) =>
+        `${transaction.currency} ${transaction.amount.toFixed(2)}`,
     },
     {
       key: "payment_method",
@@ -103,16 +68,16 @@ export default function TransactionTable({
       header: "Status",
       render: (transaction) => (
         <Badge
-  variant={
-    transaction.status === "SUCCESS"
-      ? "success"
-      : transaction.status === "PENDING"
-        ? "warning"
-        : "danger"
-  }
->
-  {transaction.status}
-</Badge>
+          variant={
+            transaction.status === "SUCCESS"
+              ? "success"
+              : transaction.status === "PENDING"
+                ? "warning"
+                : "danger"
+          }
+        >
+          {transaction.status}
+        </Badge>
       ),
     },
   ];
@@ -120,13 +85,16 @@ export default function TransactionTable({
   return (
     <div className="mt-6">
       <Table
-  columns={columns}
-  data={transactions}
-  getRowKey={(transaction) => transaction.id}
-  loading={loading}
-  error={error}
-  onRowClick={onRowClick}
-/>
+        columns={columns}
+        data={transactions}
+        getRowKey={(transaction) => transaction.id}
+        loading={loading}
+        error={error}
+        onRowClick={onRowClick}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={onSortChange}
+      />
     </div>
   );
 }
