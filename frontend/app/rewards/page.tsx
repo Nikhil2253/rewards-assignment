@@ -7,6 +7,7 @@ import { RewardTicketPreview } from "@/components/rewards/RewardCard";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import { colors, radius, shadow, typography } from "@/lib/tokens";
+import api from "@/lib/api";
 
 type Reward = {
   id: number;
@@ -108,33 +109,19 @@ export default function RewardsPage() {
       setRedeeming(true);
       setRedeemError("");
 
-      const response = await fetch(
-        "http://127.0.0.1:8000/rewards/redeem",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            reward_id: selectedReward.id,
-          }),
-        }
-      );
+      const response = await api.post("/rewards/redeem", {
+        reward_id: selectedReward.id,
+      });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.detail || "Failed to redeem reward");
-      }
+      const data = response.data;
 
       setBalance(data.new_balance);
       setRedeemedName(data.reward_name ?? selectedReward.name);
       setView("success");
-    } catch (error) {
+    } catch (error: any) {
       setRedeemError(
-        error instanceof Error
-          ? error.message
-          : "Failed to redeem reward."
+        error?.response?.data?.detail ||
+          (error instanceof Error ? error.message : "Failed to redeem reward.")
       );
     } finally {
       setRedeeming(false);
@@ -148,16 +135,12 @@ export default function RewardsPage() {
         setError("");
 
         const [balanceResponse, rewardsResponse] = await Promise.all([
-          fetch("http://127.0.0.1:8000/rewards/balance"),
-          fetch("http://127.0.0.1:8000/rewards"),
+          api.get("/rewards/balance"),
+          api.get("/rewards"),
         ]);
 
-        if (!balanceResponse.ok || !rewardsResponse.ok) {
-          throw new Error("Failed to load rewards");
-        }
-
-        const balanceData = await balanceResponse.json();
-        const rewardsData = await rewardsResponse.json();
+        const balanceData = balanceResponse.data;
+        const rewardsData = rewardsResponse.data;
 
         setBalance(balanceData.coin_balance);
         setRewards(rewardsData);

@@ -20,6 +20,7 @@ import {
   Clock,
   XCircle,
 } from "lucide-react";
+import api from "@/lib/api";
 
 const statusConfig = {
   SUCCESS: { icon: CheckCircle2, variant: "success" as const, color: "#16a34a" },
@@ -110,50 +111,44 @@ export default function Home() {
         setLoading(true);
         setError("");
 
-        const params = new URLSearchParams();
+        const params: Record<string, string> = {};
 
         if (debouncedSearch) {
-          params.set("search", debouncedSearch);
+          params.search = debouncedSearch;
         }
 
         if (category) {
-          params.set("category", category);
+          params.category = category;
         }
 
         if (status) {
-          params.set("status", status);
+          params.status = status;
         }
 
         if (amountMin) {
-          params.set("amount_min", amountMin);
+          params.amount_min = amountMin;
         }
 
         if (amountMax) {
-          params.set("amount_max", amountMax);
+          params.amount_max = amountMax;
         }
 
         if (dateFrom) {
-          params.set("date_from", dateFrom);
+          params.date_from = dateFrom;
         }
 
         if (dateTo) {
-          params.set("date_to", dateTo);
+          params.date_to = dateTo;
         }
 
-        params.set("sort_by", sortBy);
-        params.set("sort_order", sortOrder);
-        params.set("limit", "10");
-        params.set("page", page.toString());
+        params.sort_by = sortBy;
+        params.sort_order = sortOrder;
+        params.limit = "10";
+        params.page = page.toString();
 
-        const response = await fetch(
-          `http://127.0.0.1:8000/transactions?${params.toString()}`
-        );
+        const response = await api.get("/transactions", { params });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch transactions");
-        }
-
-        const data = await response.json();
+        const data = response.data;
 
         setTransactions(data.items);
         setTotalPages(data.total_pages);
@@ -203,15 +198,9 @@ export default function Home() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/analytics/categories"
-        );
+        const response = await api.get("/transactions/categories");
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
-
-        const data: string[] = await response.json();
+        const data = response.data;
 
         setCategories(data);
       } catch (error) {

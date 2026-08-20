@@ -5,6 +5,7 @@ import SpendingByCategory from "@/components/analytics/SpendingByCategory";
 import { useEffect, useState } from "react";
 import { BarChart3, AlertTriangle } from "lucide-react";
 import { colors, radius, typography } from "@/lib/tokens";
+import api from "@/lib/api";
 
 type CategorySpending = {
   category: string;
@@ -34,30 +35,19 @@ export default function AnalyticsPage() {
         setLoading(true);
         setError("");
 
-        const [categoryResponse, monthlyResponse] =
-          await Promise.all([
-            fetch(
-              "http://127.0.0.1:8000/analytics/spending-by-category"
-            ),
-            fetch(
-              "http://127.0.0.1:8000/analytics/monthly-spending"
-            ),
-          ]);
+        const [categoryResponse, monthlyResponse] = await Promise.all([
+          api.get("/analytics/spending-by-category"),
+          api.get("/analytics/monthly-spending"),
+        ]);
 
-        if (!categoryResponse.ok || !monthlyResponse.ok) {
-          throw new Error("Failed to fetch analytics");
-        }
-
-        const categoryData = await categoryResponse.json();
-        const monthlyData = await monthlyResponse.json();
-
-        setCategorySpending(categoryData);
-        setMonthlySpending(monthlyData);
-      } catch (error) {
+        setCategorySpending(categoryResponse.data);
+        setMonthlySpending(monthlyResponse.data);
+      } catch (error: any) {
         setError(
-          error instanceof Error
-            ? error.message
-            : "Failed to load analytics"
+          error?.response?.data?.detail ||
+            (error instanceof Error
+              ? error.message
+              : "Failed to load analytics")
         );
       } finally {
         setLoading(false);
