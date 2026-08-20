@@ -84,8 +84,13 @@ This build wasn't deployed within the 24-hour window, so instead of a live link,
 **Not done:**
 - Two-way chart-to-table filtering — only chart-to-table (one-way) is implemented, per the brief's minimum requirement
 - Optimistic balance update with rollback on failed redeem — the redeem flow waits for the server response before updating the displayed balance, rather than updating optimistically and rolling back on failure
+
 **Known issues:**
-- Header coin balance doesn't auto-refresh after a redeem. It's fetched once on mount, so after redeeming on `/rewards`, the balance shown in the header stays stale until the user navigates to another page or refreshes. The fix would be lifting balance state into a shared context/provider so a successful redeem can trigger a refetch — scoped out due to time.
+- Chart-to-table filtering isn't implemented — clicking a category slice or trend point on 
+  /analytics doesn't currently filter the transactions table on the main dashboard. The brief 
+  calls this out as a minimum requirement; I ran out of time to wire it and prioritized getting 
+  the core table (filter/search/sort at 10k rows) and the rewards redeem flow solid instead, 
+  per the brief's own stated ordering of what to focus on first.
 
 ## Other docs in this repo
 
